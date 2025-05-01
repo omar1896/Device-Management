@@ -1,0 +1,123 @@
+package com.VOIS_Task.IotDevices.services;
+
+import com.VOIS_Task.IotDevices.dtos.DeviceRequestDTO;
+import com.VOIS_Task.IotDevices.dtos.DeviceResponseDTO;
+import com.VOIS_Task.IotDevices.dtos.MessageResponse;
+import com.VOIS_Task.IotDevices.entities.Device;
+import com.VOIS_Task.IotDevices.enumerators.DeviceStatus;
+import com.VOIS_Task.IotDevices.exceptionhandler.DeviceExceptionHandler;
+import com.VOIS_Task.IotDevices.mapper.DeviceMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import com.VOIS_Task.IotDevices.repository.DeviceRepository;
+
+import java.util.List;
+
+
+@Service
+public class DeviceService implements DeviceServiceInterface {
+    private final DeviceRepository deviceRepository;
+
+    @Autowired
+    public DeviceService(DeviceRepository deviceRepository) {
+        this.deviceRepository = deviceRepository;
+    }
+
+    public DeviceResponseDTO createDevice(DeviceRequestDTO deviceRequestDTO) {
+        Device newDevice = new Device();
+        if (validateDeviceDetails(deviceRequestDTO) && validateTemperature(deviceRequestDTO)) {
+            newDevice = DeviceMapper.toEntity(deviceRequestDTO);
+            deviceRepository.save(newDevice);
+        }
+        return DeviceMapper.toDTO(newDevice);
+    }
+
+
+    public boolean validateDeviceDetails(DeviceRequestDTO deviceRequestDTO) throws DeviceExceptionHandler {
+        if (deviceRequestDTO.getPincode() == null || deviceRequestDTO.getTemperature() == null) {
+            throw new DeviceExceptionHandler("device Temperature,Status and Pin code is mandatory", HttpStatus.BAD_REQUEST);
+        }
+        if (findDeviceByPinCode(deviceRequestDTO) != null) {
+            throw new DeviceExceptionHandler("Pincode already exists", HttpStatus.BAD_REQUEST);
+        }
+        return true;
+    }
+
+    public boolean validateTemperature(DeviceRequestDTO deviceRequestDTO) {
+
+        if (deviceRequestDTO.getTemperature() >= 0 && deviceRequestDTO.getStatus() == (DeviceStatus.fromCode(0).getCode())) {
+            throw new DeviceExceptionHandler("Inactive(Ready) devices can't have temperature > 0", HttpStatus.BAD_REQUEST);
+        }
+        if (deviceRequestDTO.getTemperature() < 0 && deviceRequestDTO.getStatus() == (DeviceStatus.fromCode(1).getCode())) {
+            throw new DeviceExceptionHandler("Active devices can't have temperature < 0", HttpStatus.BAD_REQUEST);
+        }
+        return true;
+    }
+
+    public Device findDeviceByPinCode(DeviceRequestDTO deviceRequestDTO) {
+        return deviceRepository.getByPincode(deviceRequestDTO.getPincode());
+    }
+
+    public DeviceResponseDTO updateDevice(DeviceRequestDTO deviceRequestDTO, Long id) throws DeviceExceptionHandler {
+        Device existingDevice = deviceRepository.findById(id).orElseThrow(() -> new DeviceExceptionHandler("DEVICE_DOES_NOT_EXIST", HttpStatus.BAD_REQUEST));
+
+
+        transferUpdatedData(deviceRequestDTO, existingDevice, id);
+        deviceRepository.save(existingDevice);
+
+        return DeviceMapper.toDTO(existingDevice);
+    }
+
+    public void validateStatusAndTemperatureUpdate(Device existingDevice, DeviceRequestDTO updateDto) {
+        Integer temp = updateDto.getTemperature() != null ? updateDto.getTemperature() : existingDevice.getTemperature();
+        Integer status = updateDto.getStatus();
+
+        // User is updating status to Active (1), and resulting temp is < 0
+        if (status == 1 && temp < 0) {
+            throw new DeviceExceptionHandler("Active devices can't have temperature < 0", HttpStatus.BAD_REQUEST);
+        }
+
+        // User is updating status to Inactive (0), and resulting temp is > 0
+        if (status == 0 && temp > 0) {
+            throw new DeviceExceptionHandler("Inactive devices can't have temperature > 0", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public void transferUpdatedData(DeviceRequestDTO dto, Device existingDevice, Long id) throws DeviceExceptionHandler {
+        if (dto.getAvailability() != null) {
+            existingDevice.setAvailability(dto.getAvailability());
+        }
+        if (dto.getStatus() != 0 || dto.getStatus() != 1) {
+            validateStatusAndTemperatureUpdate(existingDevice, dto);
+            existingDevice.setStatus(DeviceStatus.fromCode(dto.getStatus()));
+        }
+        if (dto.getTemperature() != null) {
+            validateStatusAndTemperatureUpdate(existingDevice, dto);
+            existingDevice.setTemperature(dto.getTemperature());
+        }
+        if (dto.getPincode() != null && !dto.getPincode().isBlank()) {
+            Device foundByPin = findDeviceByPinCode(dto);
+            if (foundByPin != null && !foundByPin.getId().equals(id)) {
+                throw new DeviceExceptionHandler("Device with pin code " + dto.getPincode() + " already exists.", HttpStatus.BAD_REQUEST);
+            }
+            existingDevice.setPincode(dto.getPincode());
+        }
+    }
+
+
+    public ResponseEntity<MessageResponse> deleteDevice(Long id) {
+        Device existingDevice = deviceRepository.findById(id).orElseThrow(() -> new DeviceExceptionHandler("DEVICE_DOES_NOT_EXIST", HttpStatus.BAD_REQUEST));
+        deviceRepository.delete(existingDevice);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    public List<DeviceResponseDTO> getAllAvailableDevices() {
+        List<Device> devices = deviceRepository.findAllByAvailabilityTrueOrderByPincodeAsc();
+        return devices.stream()
+                .map(DeviceMapper::toDTO)
+                .toList();
+    }
+
+}
