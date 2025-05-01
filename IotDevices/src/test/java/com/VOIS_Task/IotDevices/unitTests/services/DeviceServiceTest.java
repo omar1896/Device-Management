@@ -142,7 +142,7 @@ class DeviceServiceTest {
         DeviceExceptionHandler exception = assertThrows(DeviceExceptionHandler.class,
                 () -> deviceService.updateDevice(requestDTO, existingId));
 
-        assertThat(exception.getMessage()).contains("already exists");
+        assertThat(exception.getMessage()).contains("Pin Code Already Exist");
         verify(deviceRepository, never()).save(any()); // Make sure save was not called
     }
 

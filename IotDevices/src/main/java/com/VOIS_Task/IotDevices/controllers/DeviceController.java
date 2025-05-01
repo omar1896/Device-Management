@@ -3,7 +3,6 @@ package com.VOIS_Task.IotDevices.controllers;
 
 import com.VOIS_Task.IotDevices.dtos.DeviceRequestDTO;
 import com.VOIS_Task.IotDevices.dtos.DeviceResponseDTO;
-import com.VOIS_Task.IotDevices.dtos.DeviceUpdateRequestDTO;
 import com.VOIS_Task.IotDevices.dtos.MessageResponse;
 import com.VOIS_Task.IotDevices.services.DeviceConfigurationServiceInterface;
 import com.VOIS_Task.IotDevices.services.DeviceServiceInterface;
