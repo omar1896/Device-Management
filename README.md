@@ -43,7 +43,8 @@ cd device-management-api
 
 ### 2. Configure the Database
 
-Edit `src/main/resources/application.properties`:
+
+Edit `src/main/resources/application-test.properties`: 
 
 #### For H2 in-memory (default for testing):
 
@@ -56,8 +57,8 @@ spring.jpa.hibernate.ddl-auto=update
 spring.h2.console.enabled=true
 ```
 
-#### Or use PostgreSQL:
-
+#### And For PostgreSQL:
+Edit `src/main/resources/application.properties`:
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/devices_db
 spring.datasource.username=yourusername
