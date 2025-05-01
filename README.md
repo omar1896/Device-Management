@@ -37,7 +37,7 @@ This system allows you to create, configure, retrieve, and delete devices, ensur
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/device-management-api.git
+git clone https://github.com/omar1896/Device-Management
 cd device-management-api
 ```
 
