@@ -15,7 +15,7 @@ This system allows you to create, configure, retrieve, and delete devices, ensur
 
 ## Technologies Used
 
-- Java 17+
+- Java 22+
 - Spring Boot
 - Spring Data JPA
 - H2 / PostgreSQL (configurable)
@@ -28,7 +28,7 @@ This system allows you to create, configure, retrieve, and delete devices, ensur
 
 ### Prerequisites
 
-- Java 17 or later
+- Java 22 or later
 - Maven
 - (Optional) PostgreSQL for production-like setup
 
