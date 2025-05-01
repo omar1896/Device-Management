@@ -229,7 +229,7 @@ class DeviceServiceTest {
         DeviceExceptionHandler ex = Assertions.assertThrows(DeviceExceptionHandler.class, () ->
                 deviceService.validateStatusAndTemperatureUpdate(existing, updateDto));
 
-        Assertions.assertEquals("Inactive devices can't have temperature > 0", ex.getMessage());
+        Assertions.assertEquals("Inactive devices can't have temperature > or = 0", ex.getMessage());
     }
 
     @Test

@@ -81,7 +81,7 @@ public class DeviceService implements DeviceServiceInterface {
 
         // User is updating status to Inactive (0), and resulting temp is > 0
         if (status == 0 && temp > 0) {
-            throw new DeviceExceptionHandler("Inactive devices can't have temperature > 0", HttpStatus.BAD_REQUEST);
+            throw new DeviceExceptionHandler("Inactive devices can't have temperature > or = 0", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -100,7 +100,7 @@ public class DeviceService implements DeviceServiceInterface {
         if (dto.getPincode() != null && !dto.getPincode().isBlank()) {
             Device foundByPin = findDeviceByPinCode(dto);
             if (foundByPin != null && !foundByPin.getId().equals(id)) {
-                throw new DeviceExceptionHandler("Device with pin code " + dto.getPincode() + " already exists.", HttpStatus.BAD_REQUEST);
+                throw new DeviceExceptionHandler("Pin Code Already Exist", HttpStatus.BAD_REQUEST);
             }
             existingDevice.setPincode(dto.getPincode());
         }

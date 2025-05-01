@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<MessageResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        StringBuilder errorMessage = new StringBuilder("Validation error(s): ");
+        StringBuilder errorMessage = new StringBuilder(" ");
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errorMessage.append(String.format("[%s: %s] ", error.getField(), error.getDefaultMessage()));
         }
