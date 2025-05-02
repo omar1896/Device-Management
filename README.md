@@ -60,7 +60,7 @@ spring.h2.console.enabled=true
 #### And For PostgreSQL:
 Edit `src/main/resources/application.properties`:
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/devices_db
+spring.datasource.url=jdbc:postgresql://localhost:5432/iot_devices
 spring.datasource.username=yourusername
 spring.datasource.password=yourpassword
 spring.jpa.hibernate.ddl-auto=update
