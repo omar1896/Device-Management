@@ -15,7 +15,7 @@ This system allows you to create, configure, retrieve, and delete devices, ensur
 
 ## Technologies Used
 
-- Java 17+
+- Java 22+
 - Spring Boot
 - Spring Data JPA
 - H2 / PostgreSQL (configurable)
@@ -28,7 +28,7 @@ This system allows you to create, configure, retrieve, and delete devices, ensur
 
 ### Prerequisites
 
-- Java 17 or later
+- Java 22 or later
 - Maven
 - (Optional) PostgreSQL for production-like setup
 
@@ -60,11 +60,48 @@ spring.h2.console.enabled=true
 #### And For PostgreSQL:
 Edit `src/main/resources/application.properties`:
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/devices_db
+spring.datasource.url=jdbc:postgresql://localhost:5432/iot_devices
 spring.datasource.username=yourusername
 spring.datasource.password=yourpassword
 spring.jpa.hibernate.ddl-auto=update
 ```
+```
+-- Create Database
+CREATE DATABASE iot_devices
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'English_United States.1256'
+    LC_CTYPE = 'English_United States.1256'
+    LOCALE_PROVIDER = 'libc'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+```
+```
+-- Create Table: devices
+CREATE TABLE IF NOT EXISTS public.devices (
+    id bigint NOT NULL,
+    availability boolean NOT NULL,
+    pincode character varying(255) NOT NULL,
+    status smallint NOT NULL,
+    temperature integer NOT NULL,
+    CONSTRAINT devices_pkey PRIMARY KEY (id),
+    CONSTRAINT uk_gsbkxq1rcvw8i4w7qhb2dt6uc UNIQUE (pincode),
+    CONSTRAINT devices_status_check CHECK (status >= 0 AND status <= 1)
+);
+```
+```
+-- Insert initial test data
+INSERT INTO devices (id, pincode, availability, status, temperature) 
+VALUES
+  (1, '9999999', true, 1, 5),
+  (2, '3698521', true, 0, -1),
+  (3, '1598743', false, 0, -1),
+  (4, '3657894', true, 1, 1),
+  (5, '6547531', true, 1, 10);
+```
+
 
 ### 3. Build the Application
 
