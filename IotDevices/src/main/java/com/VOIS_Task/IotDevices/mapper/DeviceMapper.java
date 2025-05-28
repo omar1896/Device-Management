@@ -5,6 +5,8 @@ import com.VOIS_Task.IotDevices.dtos.DeviceResponseDTO;
 import com.VOIS_Task.IotDevices.entities.Device;
 import com.VOIS_Task.IotDevices.enumerators.DeviceStatus;
 
+import java.util.Objects;
+
 public class DeviceMapper {
 
     public static Device toEntity(DeviceRequestDTO dto) {
@@ -21,7 +23,7 @@ public class DeviceMapper {
         dto.setId(entity.getId());
         dto.setTemperature(entity.getTemperature());
         dto.setAvailability(entity.getAvailability());
-        if (entity.getStatus().getCode() == DeviceStatus.fromCode(0).getCode()) {
+        if (Objects.equals(entity.getStatus().getCode(), DeviceStatus.READY.getCode())) {
             dto.setStatus(DeviceStatus.READY.getCode());
         } else {
             dto.setStatus(DeviceStatus.ACTIVE.getCode());
