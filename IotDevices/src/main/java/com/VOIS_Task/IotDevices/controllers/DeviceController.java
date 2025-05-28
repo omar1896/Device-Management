@@ -31,7 +31,7 @@ public class DeviceController implements DeviceControllerInterface {
     }
 
     @PostMapping
-    public ResponseEntity<MessageResponse> createDevice(@Valid @RequestBody DeviceRequestDTO deviceRequestDTO) {
+    public ResponseEntity<MessageResponse> createDevice(@RequestBody DeviceRequestDTO deviceRequestDTO) {
         DeviceResponseDTO deviceResponseDTO = deviceService.createDevice(deviceRequestDTO);
         MessageResponse response = new MessageResponse("Device created successfully", true, deviceResponseDTO);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -61,6 +61,13 @@ public class DeviceController implements DeviceControllerInterface {
         } else {
             response = new MessageResponse("Available devices retrieved successfully", true, devices);
         }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MessageResponse> getDeviceById(@PathVariable long id) {
+        DeviceResponseDTO responseDTO = deviceService.getDeviceById(id);
+        MessageResponse response = new MessageResponse("Device Retrieved Successfully", true, responseDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

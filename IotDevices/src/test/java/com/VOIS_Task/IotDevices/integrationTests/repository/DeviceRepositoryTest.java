@@ -1,4 +1,4 @@
-package com.VOIS_Task.IotDevices.unitTests.repository;
+package com.VOIS_Task.IotDevices.integrationTests.repository;
 
 import com.VOIS_Task.IotDevices.entities.Device;
 import com.VOIS_Task.IotDevices.enumerators.DeviceStatus;
@@ -6,7 +6,6 @@ import com.VOIS_Task.IotDevices.repository.DeviceRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 

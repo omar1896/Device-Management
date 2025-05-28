@@ -1,8 +1,6 @@
 package com.VOIS_Task.IotDevices.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -13,16 +11,15 @@ public class DeviceRequestDTO {
     private String pincode;
 
 
-    @Min(0)
-    @Max(1)
-    private int status;
+    private String status;
 
     @NotNull
     @Min(-1)
     @Max(10)
     private Integer temperature;
 
-    private Boolean availability = false;
+    @NotNull
+    private Boolean availability;
 
 
     public String getPincode() {
@@ -33,11 +30,11 @@ public class DeviceRequestDTO {
         this.pincode = pincode;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

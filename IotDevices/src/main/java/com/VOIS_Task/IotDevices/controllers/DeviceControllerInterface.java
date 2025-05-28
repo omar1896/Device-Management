@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface DeviceControllerInterface {
     ResponseEntity<MessageResponse> createDevice(@Valid @RequestBody DeviceRequestDTO deviceRequestDTO);
 
-    ResponseEntity<MessageResponse> updateDevice(@Valid @RequestBody DeviceRequestDTO deviceRequestDTO, @PathVariable long id);
+    ResponseEntity<MessageResponse> updateDevice(@RequestBody DeviceRequestDTO deviceRequestDTO, @PathVariable long id);
 
     ResponseEntity<MessageResponse> deleteDevice(@PathVariable long id);
 
     ResponseEntity<MessageResponse> getAllAvailableDevices();
 
-     ResponseEntity<MessageResponse> configureDevice(@PathVariable Long id);
+    ResponseEntity<MessageResponse> getDeviceById(@PathVariable long id);
+
+    ResponseEntity<MessageResponse> configureDevice(@PathVariable Long id);
 }

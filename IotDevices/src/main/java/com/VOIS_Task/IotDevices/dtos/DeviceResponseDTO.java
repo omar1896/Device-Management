@@ -3,7 +3,7 @@ package com.VOIS_Task.IotDevices.dtos;
 public class DeviceResponseDTO {
 
     private Long id;
-    private String pincode;
+
     private int status;
     private Integer temperature;
     private Boolean availability;
@@ -54,7 +54,5 @@ public class DeviceResponseDTO {
         return availability;
     }
 
-    public String getPincode() {
-        return  this.pincode;
-    }
+
 }

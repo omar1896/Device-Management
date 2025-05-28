@@ -14,7 +14,6 @@ public interface DeviceServiceInterface {
 
     boolean validateMandatoryFields(DeviceRequestDTO deviceRequestDTO) throws DeviceExceptionHandler;
 
-    boolean validateTemperatureAndStatus(DeviceRequestDTO deviceRequestDTO);
 
     DeviceResponseDTO updateDevice(DeviceRequestDTO deviceRequestDTO, Long id) throws DeviceExceptionHandler;
 
@@ -23,4 +22,6 @@ public interface DeviceServiceInterface {
     ResponseEntity<MessageResponse> deleteDevice(Long id);
 
     List<DeviceResponseDTO> getAllAvailableDevices();
+
+      DeviceResponseDTO getDeviceById(Long id);
 }

@@ -40,7 +40,7 @@ class DeviceServiceTest {
         validRequest = new DeviceRequestDTO();
         validRequest.setPincode("12345");
         validRequest.setTemperature(-1);
-        validRequest.setStatus(DeviceStatus.READY.getCode());
+        validRequest.setStatus(DeviceStatus.READY.getLabel());
         validRequest.setAvailability(true);
     }
 
@@ -60,7 +60,7 @@ class DeviceServiceTest {
         DeviceRequestDTO request = new DeviceRequestDTO();
         request.setPincode("1234567");
         request.setTemperature(-1);
-        request.setStatus(1);
+        request.setStatus(DeviceStatus.ACTIVE.getLabel());
 
         when(deviceRepository.getByPincode("1234567")).thenReturn(null);
 
@@ -72,7 +72,7 @@ class DeviceServiceTest {
         DeviceRequestDTO request = new DeviceRequestDTO();
         request.setPincode(null);
         request.setTemperature(null);
-        request.setStatus(0);
+        request.setStatus(DeviceStatus.READY.getLabel());
 
         assertThrows(DeviceExceptionHandler.class, () -> deviceService.createDevice(request));
     }
@@ -82,7 +82,7 @@ class DeviceServiceTest {
         DeviceRequestDTO request = new DeviceRequestDTO();
         request.setPincode("12345");
         request.setTemperature(10);
-        request.setStatus(0);
+        request.setStatus(DeviceStatus.READY.getLabel());
 
         when(deviceRepository.getByPincode("12345")).thenReturn(null);
 
@@ -121,7 +121,7 @@ class DeviceServiceTest {
 
         DeviceRequestDTO requestDTO = new DeviceRequestDTO();
         requestDTO.setPincode("12345");
-        requestDTO.setStatus(1); // ACTIVE
+        requestDTO.setStatus(DeviceStatus.ACTIVE.getLabel()); // ACTIVE
         requestDTO.setTemperature(10); // valid for ACTIVE
         requestDTO.setAvailability(true);
 
@@ -208,7 +208,7 @@ class DeviceServiceTest {
         existing.setTemperature(-5);
 
         DeviceRequestDTO updateDto = new DeviceRequestDTO();
-        updateDto.setStatus(1);  // Trying to activate
+        updateDto.setStatus(DeviceStatus.ACTIVE.getLabel());  // Trying to activate
         updateDto.setTemperature(-10);
 
         DeviceExceptionHandler ex = Assertions.assertThrows(DeviceExceptionHandler.class, () ->
@@ -223,7 +223,7 @@ class DeviceServiceTest {
         existing.setTemperature(5);
 
         DeviceRequestDTO updateDto = new DeviceRequestDTO();
-        updateDto.setStatus(0);  // Trying to deactivate
+        updateDto.setStatus(DeviceStatus.READY.getLabel());  // Trying to deactivate
         updateDto.setTemperature(10);
 
         DeviceExceptionHandler ex = Assertions.assertThrows(DeviceExceptionHandler.class, () ->
@@ -238,7 +238,7 @@ class DeviceServiceTest {
         existing.setTemperature(5);
 
         DeviceRequestDTO updateDto = new DeviceRequestDTO();
-        updateDto.setStatus(1);  // Activate
+        updateDto.setStatus(DeviceStatus.ACTIVE.getLabel());  // Activate
         updateDto.setTemperature(10);
 
         Assertions.assertDoesNotThrow(() ->
@@ -251,7 +251,7 @@ class DeviceServiceTest {
         existing.setTemperature(0);
 
         DeviceRequestDTO updateDto = new DeviceRequestDTO();
-        updateDto.setStatus(0);  // Deactivate
+        updateDto.setStatus(DeviceStatus.READY.getLabel());  // Deactivate
         updateDto.setTemperature(0);
 
         Assertions.assertDoesNotThrow(() ->
@@ -264,7 +264,7 @@ class DeviceServiceTest {
         existing.setTemperature(-5);
 
         DeviceRequestDTO updateDto = new DeviceRequestDTO();
-        updateDto.setStatus(1);  // Activate, no temp in DTO
+        updateDto.setStatus(DeviceStatus.ACTIVE.getLabel());  // Activate, no temp in DTO
 
         DeviceExceptionHandler ex = Assertions.assertThrows(DeviceExceptionHandler.class, () ->
                 deviceService.validateStatusAndTemperatureUpdate(existing, updateDto));

@@ -1,29 +1,27 @@
 package com.VOIS_Task.IotDevices.integrationTests.controller;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
 import com.VOIS_Task.IotDevices.dtos.DeviceRequestDTO;
 import com.VOIS_Task.IotDevices.entities.Device;
 import com.VOIS_Task.IotDevices.enumerators.DeviceStatus;
 import com.VOIS_Task.IotDevices.repository.DeviceRepository;
 import com.VOIS_Task.IotDevices.services.DeviceConfigurationService;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.MediaType;
 
 import java.util.Optional;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -126,7 +124,7 @@ public class DeviceControllerIntegrationTest {
     void createDevice_ShouldCreateDevice() throws Exception {
         DeviceRequestDTO newDevice = new DeviceRequestDTO();
         newDevice.setPincode("7777777");
-        newDevice.setStatus(DeviceStatus.READY.getCode());
+        newDevice.setStatus(DeviceStatus.READY.getLabel());
         newDevice.setAvailability(true);
         newDevice.setTemperature(-1);
 
@@ -145,7 +143,7 @@ public class DeviceControllerIntegrationTest {
     void createDevice_ShouldFail_WhenPincodeIsNot7Digits() throws Exception {
         DeviceRequestDTO invalidDevice = new DeviceRequestDTO();
         invalidDevice.setPincode("123"); // invalid pincode
-        invalidDevice.setStatus(DeviceStatus.READY.getCode());
+        invalidDevice.setStatus(DeviceStatus.READY.getLabel());
         invalidDevice.setAvailability(true);
         invalidDevice.setTemperature(-1);
 
@@ -163,7 +161,7 @@ public class DeviceControllerIntegrationTest {
     void createDevice_ShouldFail_WhenStatusIsActiveButTemperatureIsInvalid() throws Exception {
         DeviceRequestDTO invalidDevice = new DeviceRequestDTO();
         invalidDevice.setPincode("7777777");
-        invalidDevice.setStatus(DeviceStatus.ACTIVE.getCode()); // 1
+        invalidDevice.setStatus(DeviceStatus.ACTIVE.getLabel()); // 1
         invalidDevice.setAvailability(true);
         invalidDevice.setTemperature(-1); // Invalid for ACTIVE
 
@@ -181,7 +179,7 @@ public class DeviceControllerIntegrationTest {
     void createDevice_ShouldFail_WhenStatusIsReadyButTemperatureIsNotMinusOne() throws Exception {
         DeviceRequestDTO invalidDevice = new DeviceRequestDTO();
         invalidDevice.setPincode("8888888");
-        invalidDevice.setStatus(DeviceStatus.READY.getCode()); // 0
+        invalidDevice.setStatus(DeviceStatus.READY.getLabel()); // 0
         invalidDevice.setAvailability(true);
         invalidDevice.setTemperature(0); // Invalid for READY
 
@@ -208,7 +206,7 @@ public class DeviceControllerIntegrationTest {
 
         DeviceRequestDTO duplicateDevice = new DeviceRequestDTO();
         duplicateDevice.setPincode("9999999");
-        duplicateDevice.setStatus(DeviceStatus.READY.getCode());
+        duplicateDevice.setStatus(DeviceStatus.READY.getLabel());
         duplicateDevice.setAvailability(true);
         duplicateDevice.setTemperature(-1);
 
@@ -252,7 +250,7 @@ public class DeviceControllerIntegrationTest {
     void updateDevice_ShouldUpdateDevice() throws Exception {
         DeviceRequestDTO duplicatedDevice = new DeviceRequestDTO();
         duplicatedDevice.setPincode("5555555");
-        duplicatedDevice.setStatus(DeviceStatus.READY.getCode());
+        duplicatedDevice.setStatus(DeviceStatus.READY.getLabel());
         duplicatedDevice.setAvailability(false);
         duplicatedDevice.setTemperature(-1);
 
@@ -271,7 +269,7 @@ public class DeviceControllerIntegrationTest {
         long nonExistentId = 999L;
         DeviceRequestDTO duplicatedDevice = new DeviceRequestDTO();
         duplicatedDevice.setPincode("1234567");
-        duplicatedDevice.setStatus(DeviceStatus.READY.getCode());
+        duplicatedDevice.setStatus(DeviceStatus.READY.getLabel());
         duplicatedDevice.setAvailability(false);
         duplicatedDevice.setTemperature(-1);
 
@@ -290,7 +288,7 @@ public class DeviceControllerIntegrationTest {
         long nonExistentId = 999L;
         DeviceRequestDTO duplicatedDevice = new DeviceRequestDTO();
         duplicatedDevice.setPincode("5555555");
-        duplicatedDevice.setStatus(DeviceStatus.READY.getCode());
+        duplicatedDevice.setStatus(DeviceStatus.READY.getLabel());
         duplicatedDevice.setAvailability(false);
         duplicatedDevice.setTemperature(5);
 
@@ -309,7 +307,7 @@ public class DeviceControllerIntegrationTest {
 
         DeviceRequestDTO duplicatedDevice = new DeviceRequestDTO();
         duplicatedDevice.setPincode("1111111");
-        duplicatedDevice.setStatus(DeviceStatus.READY.getCode());
+        duplicatedDevice.setStatus(DeviceStatus.READY.getLabel());
         duplicatedDevice.setAvailability(false);
         duplicatedDevice.setTemperature(-1);
 

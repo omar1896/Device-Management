@@ -5,44 +5,47 @@ import com.VOIS_Task.IotDevices.controllers.DeviceController;
 import com.VOIS_Task.IotDevices.dtos.DeviceRequestDTO;
 import com.VOIS_Task.IotDevices.dtos.DeviceResponseDTO;
 import com.VOIS_Task.IotDevices.dtos.MessageResponse;
+import com.VOIS_Task.IotDevices.repository.DeviceRepository;
 import com.VOIS_Task.IotDevices.services.DeviceConfigurationServiceInterface;
 import com.VOIS_Task.IotDevices.services.DeviceServiceInterface;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
- class DeviceControllerTest {
-
+class DeviceControllerTest {
+    @Mock
+    private DeviceRepository DeviceRepository;
+    @Mock
     private DeviceServiceInterface deviceService;
+    @Mock
     private DeviceConfigurationServiceInterface deviceConfigurationService;
+    @InjectMocks
     private DeviceController deviceController;
 
-    @BeforeEach
-    void setUp() {
-        deviceService = mock(DeviceServiceInterface.class);
-        deviceConfigurationService = mock(DeviceConfigurationServiceInterface.class);
-        deviceController = new DeviceController(deviceService, deviceConfigurationService);
-    }
 
     @Test
     void testCreateDevice() {
         DeviceRequestDTO request = new DeviceRequestDTO();
+        request.setTemperature(5);
+        request.setStatus(1);
         DeviceResponseDTO responseDTO = new DeviceResponseDTO();
+        responseDTO.setTemperature(5);
+        responseDTO.setStatus(1);
 
         when(deviceService.createDevice(request)).thenReturn(responseDTO);
 
@@ -59,7 +62,10 @@ import org.springframework.test.context.ActiveProfiles;
     void testUpdateDevice() {
         long id = 1L;
         DeviceRequestDTO request = new DeviceRequestDTO();
+        request.setTemperature(5);
         DeviceResponseDTO responseDTO = new DeviceResponseDTO();
+        responseDTO.setTemperature(5);
+
         when(deviceService.updateDevice(request, id)).thenReturn(responseDTO);
 
         ResponseEntity<MessageResponse> response = deviceController.updateDevice(request, id);
@@ -67,6 +73,21 @@ import org.springframework.test.context.ActiveProfiles;
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getMessage()).isEqualTo("Device updated successfully");
         assertThat(response.getBody().getData()).isEqualTo(responseDTO);
+        verify(deviceService, times(1)).updateDevice(request, id);
+    }
+    @Test
+    void testUpdateDeviceFailureDueToInvalidStatus() {
+        long id = 1L;
+        DeviceRequestDTO request = new DeviceRequestDTO();
+        request.setTemperature(5);
+
+        when(deviceService.updateDevice(request, id))
+                .thenThrow(new IllegalArgumentException("Device status is invalid for update"));
+
+        assertThatThrownBy(() -> deviceController.updateDevice(request, id))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Device status is invalid for update");
+
         verify(deviceService, times(1)).updateDevice(request, id);
     }
 

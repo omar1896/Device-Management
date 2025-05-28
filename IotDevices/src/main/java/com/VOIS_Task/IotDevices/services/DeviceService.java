@@ -48,10 +48,10 @@ public class DeviceService implements DeviceServiceInterface {
 
     public boolean validateTemperatureAndStatus(DeviceRequestDTO deviceRequestDTO) {
 
-        if (deviceRequestDTO.getTemperature() >= 0 && deviceRequestDTO.getStatus() == (DeviceStatus.fromCode(0).getCode())) {
+        if (deviceRequestDTO.getTemperature() >= 0 && deviceRequestDTO.getStatus().equals(DeviceStatus.READY.getLabel())) {
             throw new DeviceExceptionHandler("Inactive(Ready) devices can't have temperature > 0", HttpStatus.BAD_REQUEST);
         }
-        if (deviceRequestDTO.getTemperature() < 0 && deviceRequestDTO.getStatus() == (DeviceStatus.fromCode(1).getCode())) {
+        if (deviceRequestDTO.getTemperature() < 0 && deviceRequestDTO.getStatus().equals(DeviceStatus.ACTIVE.getLabel())) {
             throw new DeviceExceptionHandler("Active devices can't have temperature < 0", HttpStatus.BAD_REQUEST);
         }
         return true;
@@ -67,13 +67,13 @@ public class DeviceService implements DeviceServiceInterface {
 
     public void validateStatusAndTemperatureUpdate(Device existingDevice, DeviceRequestDTO updateDto) {
         Integer temp = updateDto.getTemperature() != null ? updateDto.getTemperature() : existingDevice.getTemperature();
-        Integer status = updateDto.getStatus();
+        Integer status = updateDto.getStatus() != null ? DeviceStatus.fromLabel(updateDto.getStatus()).getCode() : existingDevice.getStatus().getCode();
 
-        if (status == 1 && temp < 0) {
-            throw new DeviceExceptionHandler("Active devices can't have temperature < 0", HttpStatus.BAD_REQUEST);
+        if (status == 1 && temp < 0 || status == 1 && temp > 10) {
+            throw new DeviceExceptionHandler("Active devices can't have temperature < 0 or > 10 ", HttpStatus.BAD_REQUEST);
         }
-        if (status == 0 && temp > 0) {
-            throw new DeviceExceptionHandler("Inactive devices can't have temperature > or = 0", HttpStatus.BAD_REQUEST);
+        if (status == 0 && temp != -1) {
+            throw new DeviceExceptionHandler("Inactive devices can have temperature -1 only ", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -81,9 +81,9 @@ public class DeviceService implements DeviceServiceInterface {
         if (dto.getAvailability() != null) {
             existingDevice.setAvailability(dto.getAvailability());
         }
-        if (dto.getStatus() != 0 || dto.getStatus() != 1) {
+        if (dto.getStatus() != null) {
             validateStatusAndTemperatureUpdate(existingDevice, dto);
-            existingDevice.setStatus(DeviceStatus.fromCode(dto.getStatus()));
+            existingDevice.setStatus(DeviceStatus.fromLabel(dto.getStatus()));
         }
         if (dto.getTemperature() != null) {
             validateStatusAndTemperatureUpdate(existingDevice, dto);
@@ -112,4 +112,8 @@ public class DeviceService implements DeviceServiceInterface {
                 .toList();
     }
 
+    public DeviceResponseDTO getDeviceById(Long id) {
+        Device existingDevice = deviceRepository.findById(id).orElseThrow(() -> new DeviceExceptionHandler("DEVICE_DOES_NOT_EXIST", HttpStatus.BAD_REQUEST));
+        return DeviceMapper.toDTO(existingDevice);
+    }
 }

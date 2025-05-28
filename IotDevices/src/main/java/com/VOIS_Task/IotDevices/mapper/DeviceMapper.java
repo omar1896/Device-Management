@@ -12,7 +12,7 @@ public class DeviceMapper {
         device.setPincode(dto.getPincode());
         device.setTemperature(dto.getTemperature());
         device.setAvailability(dto.getAvailability());
-        device.setStatus(DeviceStatus.fromCode(dto.getStatus()));
+        device.setStatus(DeviceStatus.fromLabel(dto.getStatus()));
         return device;
     }
 

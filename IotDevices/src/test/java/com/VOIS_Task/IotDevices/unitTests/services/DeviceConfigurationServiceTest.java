@@ -27,7 +27,6 @@ class DeviceConfigurationServiceTest {
     @InjectMocks
     private DeviceConfigurationService deviceConfigurationService;
 
-
     private Device testDevice;
 
     @BeforeEach
