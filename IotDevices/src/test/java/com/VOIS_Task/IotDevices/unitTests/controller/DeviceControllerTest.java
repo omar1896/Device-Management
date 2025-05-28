@@ -5,6 +5,7 @@ import com.VOIS_Task.IotDevices.controllers.DeviceController;
 import com.VOIS_Task.IotDevices.dtos.DeviceRequestDTO;
 import com.VOIS_Task.IotDevices.dtos.DeviceResponseDTO;
 import com.VOIS_Task.IotDevices.dtos.MessageResponse;
+import com.VOIS_Task.IotDevices.enumerators.DeviceStatus;
 import com.VOIS_Task.IotDevices.repository.DeviceRepository;
 import com.VOIS_Task.IotDevices.services.DeviceConfigurationServiceInterface;
 import com.VOIS_Task.IotDevices.services.DeviceServiceInterface;
@@ -42,7 +43,7 @@ class DeviceControllerTest {
     void testCreateDevice() {
         DeviceRequestDTO request = new DeviceRequestDTO();
         request.setTemperature(5);
-        request.setStatus(1);
+        request.setStatus(DeviceStatus.ACTIVE.getLabel());
         DeviceResponseDTO responseDTO = new DeviceResponseDTO();
         responseDTO.setTemperature(5);
         responseDTO.setStatus(1);

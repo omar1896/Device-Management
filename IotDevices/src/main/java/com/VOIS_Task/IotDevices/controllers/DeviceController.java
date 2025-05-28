@@ -6,7 +6,6 @@ import com.VOIS_Task.IotDevices.dtos.DeviceResponseDTO;
 import com.VOIS_Task.IotDevices.dtos.MessageResponse;
 import com.VOIS_Task.IotDevices.services.DeviceConfigurationServiceInterface;
 import com.VOIS_Task.IotDevices.services.DeviceServiceInterface;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
